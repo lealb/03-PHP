@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>关键字云图</title>
+    <link rel="stylesheet" href="__CSS__/bootstrap.min.css">
+    <script type="text/javascript" src="__JS__/heatmapData.js"></script>
+    <script type="text/javascript" src="__JS__/swfobject.js"></script>
+    <script type="text/javascript" src="__JS__/jquery-1.12.2.min.js"></script>
+    <script type="text/javascript" src="__JS__/bootstrap.min.js"></script>
+    <script type="text/javascript" src="__JS__/heatmap-amap.min.js"></script>
+    <script type="text/javascript" src="__JS__/addToolbar.js"></script>
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <p class="lead text-info text-center">云腾志远-云岩区项目分布关键字云图</p>
+        </div>
+        <div class="col-md-12">
+            <div class="col-md-4 col-md-offset-4">
+                <div class="panel panel-info">
+                    <div class="panel-heading">
+                        <div class="col-md-10">
+                            <h3 class="panel-title text-center">关键字云图</h3>
+                        </div>
+
+                        <div class="col-md-2">
+                            <button class="btn " style="float: left" data-toggle="modal" data-target="#myModal">
+                                显示
+                            </button>
+                        </div>
+
+                    </div>
+                    <div class="panel-body">
+                        <div id="flashcontent">This will be shown to users with no Flash or Javascript.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="myModal" tabtagcloud="-1" role="dialog"
+             aria-labelledby="myModalLabel" aria-hidden="true" height="1000px">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close"
+                                data-dismiss="modal" aria-hidden="true">
+                            &times;
+                        </button>
+                        <h4 class="modal-title" id="myModalLabel">
+                            云岩区事件详细
+                        </h4>
+                    </div>
+                    <div class="modal-body">
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr class="info">
+                                <th class="text-center" width="5%">序号</th>
+                                <th>案卷编号</th>
+                                <th>事发位置</th>
+                                <th>详细信息</th>
+                                <th width="7%">处理类型</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <if condition="!empty($list)">
+                                <php>$i=0</php>
+                                <foreach name="list" item="vo" key="i">
+                                    <php>$i++</php>
+                                    <tr class="tr-info">
+                                        <td>{$i}</td>
+                                        <td>{$vo['caseid']}</td>
+                                        <td>{$vo['casepsin']}</td>
+                                        <td>{$vo['caseremark']}</td>
+                                        <td>{$vo['dealtypename']}</td>
+                                    </tr>
+                                </foreach>
+                                <else />
+                                <tr>
+                                    <td colspan="5">
+                                        <div class="alert alert-success">
+                                            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                                            <span class="sr-only">Error:</span>
+                                            <span>暂时没有符合条件的信息</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </if>
+                            </tbody>
+                        </table>
+                        <nav class="pagination-nav pull-right">
+                            {$page}
+                        </nav>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal -->
+        </div>
+    </div>
+</div>
+<script>
+
+    //关键字云图
+    var so = new SWFObject("__IMG__/ctagcloud.swf", "tagcloud", "360", "420", "7", "#ffffff");
+    so.addParam("wmode", "transparent");
+    so.addVariable("tcolor", "0x333333");
+    so.addVariable("tcolor2", "0x009900");
+    so.addVariable("mode", "tags");
+    so.addVariable("distr", "true");
+    so.addVariable("tspeed", "100");
+    so.addVariable("tagcloud", "<tags><a href='/Home/Index/tagcloud/tag/安全隐患' data-toggle='modal' data-target='#myModal' class='tag-link-66' title='2 topics' rel='tag' style='font-size: 20pt;' color='0xff0099'>安全隐患</a><a href='/Home/Index/tagcloud/tag/违章建筑' class='tag-link-39' title='1 topics' rel='tag' style='font-size: 19pt;'>违章建筑</a> <a href='/Home/Index/tagcloud/tag/噪音扰民' class='tag-link-54' title='2 topics' rel='tag' style='font-color:red;font-size: 18pt;'>噪音扰民</a> <a href='/Home/Index/tagcloud/tag/占道经营' class='tag-link-42' title='1 topics' rel='tag' style='font-size: 17pt;'>占道经营</a> <a href='/Home/Index/tagcloud/tag/道路破损' class='tag-link-25' title='1 topics' rel='tag' style='font-size: 16pt;'>道路破损</a> <a href='/Home/Index/tagcloud/tag/油烟污染' class='tag-link-27' title='1 topics' rel='tag' style='font-size: 15pt;'>油烟污染</a> <a href='/Home/Index/tagcloud/tag/下水道堵塞' class='tag-link-29' title='1 topics' rel='tag' style='font-size: 14pt;'>下水道堵塞</a> <a href='/Home/Index/tagcloud/tag/污水横流' class='tag-link-43' title='1 topics' rel='tag' style='font-size: 13.5pt;' hicolor='red'>污水横流</a> <a href='/Home/Index/tagcloud/tag/施工扰民' class='tag-link-24' title='1 topics' rel='tag' style='font-size: 13pt;'>施工扰民</a> <a href='/Home/Index/tagcloud/tag/夜市摊点' class='tag-link-48' title='2 topics' rel='tag' style='font-size: 12.5pt;'>夜市摊点</a> <a href='/Home/Index/tagcloud/tag/机动车违停' class='tag-link-26' title='2 topics' rel='tag' style='font-size: 12pt;'>机动车违停</a> <a href='/Home/Index/tagcloud/tag/化粪池堵塞' class='tag-link-37' title='3 topics' rel='tag' style='font-size: 11.1111pt;'>化粪池堵塞</a> <a href='/Home/Index/tagcloud/tag/高音喇叭' class='tag-link-18' title='1 topics' rel='tag' style='font-size: 11pt;'>高音喇叭</a> <a href='/Home/Index/tagcloud/tag/粪水横流' class='tag-link-28' title='1 topics' rel='tag' style='font-size: 10.5pt;'>粪水横流</a> <a href='/Home/Index/tagcloud/tag/施工放炮' class='tag-link-32' title='1 topics' rel='tag' style='font-size: 10pt;'>施工放炮</a> <a href='/Home/Index/tagcloud/tag/没有路灯' class='tag-link-56' title='2 topics' rel='tag' style='font-size: 9.55556pt;'>没有路灯</a> <a href='/Home/Index/tagcloud/tag/交通堵塞' class='tag-link-57' title='2 topics' rel='tag' style='font-size: 9.5px;'>交通堵塞</a> <a href='/Home/Index/tagcloud/tag/井盖翘起' class='tag-link-8' title='1 topics' rel='tag' style='font-size: 9.5pt;'>井盖翘起</a> <a href='/Home/Index/tagcloud/tag/垃圾堆放' class='tag-link-61' title='2 topics' rel='tag' style='font-size: 9pt;'>垃圾堆放</a> <a href='/Home/Index/tagcloud/tag/乞丐行乞' class='tag-link-64' title='2 topics' rel='tag' style='font-size: 8.5pt;'>乞丐行乞</a> <a href='/Home/Index/tagcloud/tag/外墙漏水' class='tag-link-34' title='2 topics' rel='tag' style='font-size: 8pt;'>外墙漏水</a> <a href='/Home/Index/tagcloud/tag/片区停电' class='tag-link-50' title='2 topics' rel='tag' style='font-size: 8pt;'>片区停电</a> <a href='/Home/Index/tagcloud/tag/摩托车乱停放' class='tag-link-62' title='2 topics' rel='tag' style='font-size: 8pt;'>摩托车乱停放</a> <a href='/Home/Index/tagcloud/tag/酒吧噪音' class='tag-link-45' title='1 topics' rel='tag' style='font-size: 8pt;'>酒吧噪音</a> <a href='/Home/Index/tagcloud/tag/僵尸车' class='tag-link-38' title='1 topics' rel='tag' style='font-size: 8pt;'>僵尸车</a> <a href='/Home/Index/tagcloud/tag/棚户改造' class='tag-link-36' title='1 topics' rel='tag' style='font-size: 8pt;'>棚户改造</a> <a href='/Home/Index/tagcloud/tag/申请廉租房' class='tag-link-40' title='3 topics' rel='tag' style='font-size: 8pt;'>申请廉租房</a> </tags>");
+    so.write("flashcontent");
+</script>
+</body>
+
+</html>

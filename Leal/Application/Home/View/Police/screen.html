@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>公安厅大屏</title>
+    <script type="text/javascript" src="__JS__/echarts/echarts.js"></script>
+</head>
+<style>
+    body{
+        background: url(__IMG__/police/screen3.3.5.jpg) no-repeat;
+    }
+
+    #movediv{
+        width: 107px;
+        height: 107px;
+        background: url(__IMG__/police/move/h6.png) no-repeat;
+        /*border-radius:150px;*/
+        -webkit-animation:run 6s linear 0s infinite;
+        position: absolute;
+        top: 547px;
+        left: 336px;
+    }
+
+    #movediv:hover{
+        -webkit-animation-play-state:paused;
+    }
+    @-webkit-keyframes run{
+        from{
+            -webkit-transform:rotate(0deg);
+        }
+        to{
+            -webkit-transform:rotate(360deg);
+        }
+    }
+
+    /*#chart1{*/
+
+        /*width: 210px;*/
+        /*height: 210px;*/
+        /*position: absolute;*/
+        /*top:825px;*/
+        /*left:230px;*/
+    /*}*/
+
+    #chart2{
+
+        width: 550px;
+        height: 390px;
+        position: absolute;
+        top: 365px;
+        left:390px;
+    }
+    /*折线图*/
+    #chart3{
+
+        width: 490px;
+        height: 400px;
+        position: absolute;
+        top: 390px;
+        left:970px;
+    }
+    #chart4{
+
+        width: 450px;
+        height: 400px;
+        position: absolute;
+        top: 390px;
+        left:1455px;
+    }
+    #video{
+        width: auto;
+
+        position: absolute;
+        top:200px;
+        left:365px;
+    }
+</style>
+<body>
+    <!--旋转效果-->
+    <!--<div id="movediv"></div>-->
+    <!--chart-->
+    <div id="chart1"></div>
+    <div id="chart2"></div>
+    <!--video-->
+    <!--<div id="video">-->
+        <!--<video  width="620" height="295" autoplay="autoplay" loop="loop">-->
+            <!--<source src="__VIDEO__/police.mp4" type="video/mp4">-->
+        <!--</video>-->
+    <!--</div>-->
+    <div id="chart3"></div>
+    <div id="chart4"></div>
+</body>
+<script>
+    //1.chart 圆环图
+    var labelTop = {
+        normal : {
+            label : {
+                show : true,
+                position : 'center',
+                formatter : '{b}',
+                textStyle: {
+                    baseline : 'bottom'
+                }
+            },
+            labelLine : {
+                show : false
+            }
+        }
+    };
+    var labelFromatter = {
+        normal : {
+            color:'#23ef21',//设置圆环颜色
+            label : {
+                formatter : function (params){
+                    return 100 - params.value + '%'
+                },
+                textStyle: {
+                    color:'#fff',
+                    fontSize:25,
+                    baseline : 'top'
+                }
+            }
+        }
+    }
+    var labelBottom = {
+        normal : {
+            color: '#ccc',
+            label : {
+                show : true,
+                position : 'center'
+            },
+            labelLine : {
+                show : false
+            }
+        },
+        emphasis: {
+            color: 'rgba(0,0,0,0)'
+        }
+    };
+    option = {
+        series : [
+            {
+                type : 'pie',
+              //  center : ['10%', '30%'],
+                radius : [105, 90],
+                x: '0%', // for funnel
+                itemStyle : labelFromatter,
+                data : [
+                    {name:'other', value:46, itemStyle : labelBottom},
+                    {name:'GoogleMaps', value:54,itemStyle : labelTop}
+                ]
+            }
+
+        ]
+    };
+    var chart1=echarts.init(document.getElementById('chart1'));
+    chart1.setOption(option);
+
+    //2.chart柱状图
+    option = {
+        tooltip : {
+            trigger: 'axis',
+            axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+            }
+        },
+        grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            containLabel: true
+        },
+        xAxis : [
+            {
+
+                type : 'value',
+                axisLabel:{
+                    textStyle:{
+                        color:'#fff'
+                    }
+                },
+                axisLine:{
+                    show:'false',
+                    lineStyle:{
+                        color:'fff',
+
+                    }
+                }
+            }
+        ],
+        yAxis : [
+            {
+                type : 'category',
+                axisLabel:{
+                    show:'false',
+                    textStyle:{
+                        color:'#fff'
+                    }
+                },
+                axisLine:{
+                    lineStyle:{
+                        color:'fff',
+                        width:0
+                    }
+                },
+                data : ['5','4','3','2','1']
+            }
+        ],
+        series : [
+            {
+                name:'直接访问',
+                type:'bar',
+                itemStyle : {
+                    normal: {
+                        color:'#1baa9d',
+                        label : {
+                            show: true,
+                            position: 'right',
+                            textStyle:{
+                                // fontSize:12,
+                            }
+                        }
+                    }
+                },
+                data:[3.65, 1.69, 24.94, 6.35,144.11]
+            }
+        ]
+    };
+    var chart2=echarts.init(document.getElementById('chart2'));
+    chart2.setOption(option);
+
+    //chart3折线图
+    option = {
+        tooltip: {
+            trigger: 'axis'
+        },
+        xAxis:  {
+            type: 'category',
+            boundaryGap: false,
+            axisLabel: {
+                textStyle:{
+                    color:'#fff'
+                }
+            },
+            axisLine:{
+                lineStyle:{
+                    color:'fff'
+                }
+            },
+            data: ['一','二','三','四','五','六','七',
+                '八','九','十','十一','十二','十三','十四']
+        },
+        yAxis: {
+            type: 'value',
+            max:20,
+           // borderColor:'#fff',
+            axisLabel: {
+                formatter: '{value} ',
+                textStyle:{
+                    color:'#fff'
+                }
+            },
+            axisLine:{
+                show:'false',
+                lineStyle:{
+                    color:'fff',
+                    width:0
+                }
+            }
+        },
+        legend: {
+            orient : 'vertical',
+            x : 'right',
+            y:'top',
+            padding: [
+                15,  // 上
+                40, // 右
+                0,  // 下
+                0, // 左
+            ],
+            textStyle:{
+                color:'#fff'
+                // fontSize:12,
+            },
+            data:['数据汇聚','数据服务']
+        },
+        series: [
+            {
+                name:'数据汇聚',
+                type:'line',
+                itemStyle : {
+                    normal: {
+                        color:'#1bab1b',
+                        label : {
+                            show: true,
+                            position: 'right',
+                            textStyle:{
+                                // fontSize:12,
+                            }
+                        }
+                    }
+                },
+                data:[11, 11, 15, 13, 12, 13, 10,11, 11, 15,
+                    13, 12, 13, 10],
+            },
+            {
+
+                name:'数据服务',
+                type:'line',
+                itemStyle : {
+                    normal: {
+                        color:'#1baa9d',
+                        label : {
+                            show: true,
+                            position: 'right',
+                            textStyle:{
+                                // fontSize:12,
+                            }
+                        }
+                    }
+                },
+                data:[4, 3, 4, 6, 8, 9, 4,2, 2, 7,
+                    9, 4, 9, 7],
+            },
+
+        ]
+    };
+    var chart3=echarts.init(document.getElementById('chart3'));
+    chart3.setOption(option);
+
+    //chart4饼形图
+    option = {
+        color:[
+            '#1baa9d',
+            '#1b68aa',
+            '#1baa5e',
+            '#7daa1b',
+            '#aa9b1b',
+            '#aa681b',
+            '#aa3d1b',
+            '#1b2caa'
+        ],
+        tooltip : {
+            trigger: 'item',
+            formatter: "{a} <br/>{b} : {c} ({d}%)"
+        },
+//        legend: {
+//            show:'false',
+//            orient : 'vertical',
+//            x : 'right',
+//            y:'bottom',
+//            padding: [
+//                160,  // 上
+//                10, // 右
+//                20,  // 下
+//                30, // 左
+//            ],
+//            textStyle:{
+//                color:'#fff'
+//            },
+//            data:['查询服务','下载服务','订阅服务','比对服务','分析服务','核查服务','推送服务','统计服务']
+//        },
+        calculable : true,
+        series : [
+            {
+                name:'访问来源',
+                type:'pie',
+                startAngle:0,
+                center:['45%','50%'],
+                radius : ['50%', '70%'],
+                selectedOffset:3,
+                itemStyle : {
+                    normal : {
+                        label : {
+                            show : true,
+                            textStyle:{
+                               // formatter: "({d}%)",
+                                position:'inside',
+                                fontSize:15
+                            }
+                        },
+                        labelLine : {
+                            show : true,
+                            textStyle:{
+                                formatter: "({d}%)",
+                                position:'inside',
+                                fontSize:15
+                            }
+                        }
+                    },
+                    emphasis : {
+                        label : {
+                            show : true,
+                            position : 'center',
+                            textStyle : {
+                                fontSize : '20',
+                                //color:'#fff',
+                                fontWeight : 'bold'
+                            }
+                        }
+                    }
+                },
+                data:[
+                    {value:463, name:'查询服务'},
+                    {value:82, name:'下载服务'},
+                    {value:33, name:'订阅服务'},
+                    {value:9, name:'比对服务'},
+                    {value:14, name:'分析服务'},
+                    {value:10, name:'核查服务'},
+                    {value:2, name:'推送服务'},
+                    {value:0, name:'统计服务'}
+                ]
+            }
+        ]
+    };
+    var chart4=echarts.init(document.getElementById('chart4'));
+    chart4.setOption(option);
+</script>
+</html>

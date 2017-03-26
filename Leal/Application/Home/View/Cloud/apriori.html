@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>关联性分析</title>
+</head>
+<link rel="stylesheet" href="__CSS__/bootstrap.min.css">
+<script type="text/javascript" src="http://echarts.baidu.com/build/dist/echarts.js"></script>
+<!--<script type="text/javascript" data-main="__JS__/app.js" src="__JS__/require.min.js"></script>-->
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <p class="lead text-info text-center" style="font-family: '黑体' ! important;">云岩区社会频繁事件挖掘关联分析模型</p>
+        </div>
+        <div class="col-md-12">
+            <div class="panel panel-info">
+                <!--<div class="panel-heading">-->
+                    <!--<h3 class="panel-title text-center ">关联性分析</h3>-->
+                <!--</div>-->
+                <div class="col-md-12 panel-body">
+                    <!-- 为Charts准备一个具备大小（宽高）的Dom -->
+                    <div id="main" style="width: 100%;height:500px;"></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script type="text/javascript">
+    // 基于准备好的dom，初始化echarts实例
+    // 路径配置
+    require.config({
+        paths: {
+            echarts: 'http://echarts.baidu.com/build/dist'
+        }
+    });
+    var area=new Array("云岩区","三桥","未来方舟","大营坡","蔡家关","东山","渔安新城","二桥","盐务街","市北路",'宝山北路');
+    var acase=new Array("井盖翘起-7","施工放炮-6","安全隐患-56","道路破损-22","噪音扰民-38","垃圾堆放-5",
+                        "下水道堵塞-6","粪水横流-11","机动车违停-7","化粪池堵塞-8","施工扰民-17",
+                        "乞丐行乞-8","污水横流-21","占道经营-27",
+                       '违章建筑-54',"夜市摊点-9","外墙漏水-5","没有路灯-5","高音喇叭-17","片区停电-2");
+    //数据
+    var nodes=[
+        {category:0, name: '云岩区', value : 10, label: '云岩区\n（主要）'},
+        {category:2, name: area[1],value : 8},
+        {category:2, name: area[2],value : 8},
+        {category:2, name: area[3],value : 8},
+        {category:2, name: area[4],value : 8},
+        {category:2, name: area[5],value : 8},
+        {category:2, name: area[6],value : 8},
+        {category:2, name: area[7],value : 8},
+        {category:2, name: area[8],value : 8},
+        {category:2, name: area[9],value : 8},
+        {category:2, name: area[10],value : 8},
+
+
+        {category:1, name: acase[0],value : 2},
+        {category:1, name: acase[1],value : 2},
+        {category:1, name: acase[2],value : 9},
+        {category:1, name: acase[3],value : 6},
+        {category:1, name: acase[4],value : 7},
+        {category:1, name: acase[5],value : 2},
+        {category:1, name: acase[6],value : 2},
+        {category:1, name: acase[7],value : 4},
+        {category:1, name: acase[8],value : 3},
+        {category:1, name: acase[9],value : 3},
+        {category:1, name: acase[10],value : 5},
+        {category:1, name: acase[11],value : 4},
+        {category:1, name: acase[12],value : 6},
+        {category:1, name: acase[13],value : 5},
+        {category:1, name: acase[14],value : 8},
+        {category:1, name: acase[15],value : 4},
+        {category:1, name: acase[16],value : 2},
+        {category:1, name: acase[17],value : 2},
+        {category:1, name: acase[18],value : 5},
+        {category:1, name: acase[19],value : 1},
+    ];
+    var links= [
+        {source : area[1], target : area[0], weight : 6, name: '所属'},
+        {source : area[2], target : area[0], weight : 6, name: '所属'},
+        {source : area[3], target : area[0], weight : 6, name: '所属'},
+        {source : area[4], target : area[0], weight : 6, name: '所属'},
+        {source : area[5], target : area[0], weight : 6, name: '所属'},
+        {source : area[6], target : area[0], weight : 6, name: '所属'},
+        {source : area[7], target : area[0], weight : 6, name: '所属'},
+        {source : area[8], target : area[0], weight : 6, name: '所属'},
+        {source : area[9], target : area[0], weight : 6, name: '所属'},
+        {source : area[10], target : area[0], weight : 6, name: '所属'},
+
+        {source : acase[1], target : area[1], weight : 1,name: '事件发生'},
+        {source : acase[2], target : area[1], weight : 1,name: '事件发生'},
+        {source : acase[3], target : area[1], weight : 1,name: '事件发生'},
+        {source : acase[0], target : area[1], weight : 1,name: '事件发生'},
+        {source : acase[6], target : area[1], weight : 1,name: '事件发生'},
+        {source : acase[7], target : area[1], weight : 1,name: '事件发生'},
+        {source : acase[9], target : area[1], weight : 1,name: '事件发生'},
+        {source : acase[10], target : area[1], weight : 1,name: '事件发生'},
+        {source : acase[12], target : area[1], weight : 1,name: '事件发生'},
+        {source : acase[15], target : area[1], weight : 1,name: '事件发生'},
+
+        {source : acase[2], target : area[2], weight : 1,name: '事件发生'},
+        {source : acase[4], target : area[2], weight : 1,name: '事件发生'},
+        {source : acase[10], target : area[2], weight : 1,name: '事件发生'},
+
+        {source : acase[2], target : area[3], weight : 1,name: '事件发生'},
+        {source : acase[4], target : area[3], weight : 1,name: '事件发生'},
+        {source : acase[6], target : area[3], weight : 1,name: '事件发生'},
+        {source : acase[9], target : area[3], weight : 1,name: '事件发生'},
+        {source : acase[12], target : area[3], weight : 1,name: '事件发生'},
+        {source : acase[14], target : area[3], weight : 1,name: '事件发生'},
+        {source : acase[15], target : area[3], weight : 1,name: '事件发生'},
+
+        {source : acase[2], target : area[4], weight : 1,name: '事件发生'},
+        {source : acase[19], target : area[4], weight : 1,name: '事件发生'},
+        {source : acase[6], target : area[4], weight : 1,name: '事件发生'},
+        {source : acase[8], target : area[4], weight : 1,name: '事件发生'},
+        {source : acase[12], target : area[4], weight : 1,name: '事件发生'},
+        {source : acase[14], target : area[4], weight : 1,name: '事件发生'},
+        {source : acase[15], target : area[4], weight : 1,name: '事件发生'},
+        {source : acase[16], target : area[4], weight : 1,name: '事件发生'},
+        {source : acase[18], target : area[4], weight : 1,name: '事件发生'},
+
+        {source : acase[2], target : area[5], weight : 1,name: '事件发生'},
+        {source : acase[17], target : area[5], weight : 1,name: '事件发生'},
+        {source : acase[6], target : area[5], weight : 1,name: '事件发生'},
+        {source : acase[10], target : area[5], weight : 1,name: '事件发生'},
+
+        {source : acase[2], target : area[6], weight : 1,name: '事件发生'},
+        {source : acase[4], target : area[6], weight : 1,name: '事件发生'},
+        {source : acase[15], target : area[6], weight : 1,name: '事件发生'},
+
+        {source : acase[2], target : area[7], weight : 1,name: '事件发生'},
+        {source : acase[3], target : area[7], weight : 1,name: '事件发生'},
+        {source : acase[6], target : area[7], weight : 1,name: '事件发生'},
+        {source : acase[15], target : area[7], weight : 1,name: '事件发生'},
+        {source : acase[12], target : area[7], weight : 1,name: '事件发生'},
+        {source : acase[14], target : area[7], weight : 1,name: '事件发生'},
+
+        {source : acase[2], target : area[8], weight : 1,name: '事件发生'},
+        {source : acase[4], target : area[8], weight : 1,name: '事件发生'},
+        {source : acase[10], target : area[8], weight : 1,name: '事件发生'},
+        {source : acase[14], target : area[8], weight : 1,name: '事件发生'},
+
+        {source : acase[2], target : area[9], weight : 1,name: '事件发生'},
+        {source : acase[4], target : area[9], weight : 1,name: '事件发生'},
+        {source : acase[15], target : area[9], weight : 1,name: '事件发生'},
+        {source : acase[14], target : area[9], weight : 1,name: '事件发生'},
+
+        {source : acase[2], target : area[10], weight : 1,name: '事件发生'},
+        {source : acase[4], target : area[10], weight : 1,name: '事件发生'},
+        {source : acase[15], target : area[10], weight : 1,name: '事件发生'},
+        {source : acase[12], target : area[10], weight : 1,name: '事件发生'},
+        {source : acase[6], target : area[10], weight : 1,name: '事件发生'},
+        {source : acase[18], target : area[10], weight : 1,name: '事件发生'},
+
+        {source : acase[13], target : area[10], weight : 1,name: '事件发生'},
+        {source : acase[5], target : area[10], weight : 1,name: '事件发生'},
+        {source : acase[7], target : area[10], weight : 1,name: '事件发生'},
+        {source : acase[9], target : area[10], weight : 1,name: '事件发生'},
+        {source : acase[11], target : area[10], weight : 1,name: '事件发生'},
+        {source : acase[13], target : area[10], weight : 1,name: '事件发生'},
+
+        {source : '安全隐患-56', target : '噪音扰民-38', weight : 1,name: '关联性：支持度：25,安-置信度：0.446429\n噪-置信度：0.657895'},
+        {source : '安全隐患-56', target : '违章建筑-54', weight : 1,name:'关联性：支持度：31,置信度：0.553571'},
+        {source : '噪音扰民-38', target : '违章建筑-54', weight : 1,name:'关联性：支持度：25,置信度：0.657895'},
+        {source : '化粪池堵塞-8', target : '粪水横流-11', weight : 1,name:'关联性：支持度：22,置信度：0.487895'},
+        {source : '下水道堵塞-6', target : '污水横流-21', weight : 1,name:'关联性：支持度：38,置信度：0.477895'},
+        {source : '夜市摊点-9', target : '占道经营-27', weight : 1,name:'关联性：支持度：52,置信度：0.627895'},
+    ];
+    // 使用
+    require(
+    [
+        'echarts',
+        'echarts/chart/bar', // 使用柱状图就加载bar模块，按需加载
+        'echarts/chart/chord',
+        'echarts/chart/force'
+    ],
+
+    function (ec) {
+        // 基于准备好的dom，初始化echarts图表
+        var myChart = ec.init(document.getElementById('main'));
+
+        option = {
+            title : {
+                text: '',
+                testStyle:{
+                    fontSize: 18,
+                    fontWeight: 'bolder',
+                    color: '#333'
+                },
+//                subtext: '说明：项目采用优化过的Apriori算法'+'\n'+
+//                         '1、支持度：P(A ∩ B)，既有A又有B的概率'+'\n'+
+//                         '2、置信度：'+'\n'+
+//                         'P(B|A)，在A发生的事件中同时发生B的概率 p(AB)/P(A)'+'\n'+
+//                         '例如购物篮分析：牛奶 ⇒ 面包'+'\n'+
+//                         '例子：[支持度：3%，置信度：40%]'+'\n'+
+//                         '支持度3%：意味着3%顾客同时购买牛奶和面包'+'\n'+
+//                         '置信度40%：意味着购买牛奶的顾客40%也购买面包',
+                x:'left',
+                y:'top',
+                subtextStyle:{
+                    color: '#aaa',
+                    fontSize: 13,
+                }
+
+            },
+            tooltip : {
+                trigger: 'item',
+                formatter: '{a} : {b}'
+            },
+            toolbox: {
+                show : true,
+                feature : {
+                    restore : {show: true},
+                    magicType: {show: true, type: ['force', 'chord']},
+                    saveAsImage : {show: true}
+                }
+            },
+            legend: {
+                x: 'left',
+                data:['事件','区域']
+
+            },
+            series : [
+                {
+                    type:'force',
+                    name : "关联",
+                    ribbonType: false,
+                    categories : [
+                        {
+                            name: '所属'
+                        },
+                        {
+                            name: '事件'
+                        },
+                        {
+                            name:'区域'
+                        }
+                    ],
+                    itemStyle: {
+                        normal: {
+                            label: {
+                                show: true,
+                                textStyle: {
+                                    color: '#333'
+                                }
+                            },
+                            nodeStyle : {
+                                brushType : 'both',
+                                borderColor : 'rgba(255,215,0,0.4)',
+                                borderWidth : 1
+                            },
+                            linkStyle: {
+                                type: 'curve'
+                            }
+                        },
+                        emphasis: {
+                            label: {
+                                show: false
+                                // textStyle: null      // 默认使用全局文本样式，详见TEXTSTYLE
+                            },
+                            nodeStyle : {
+                                //r: 30
+                            },
+                            linkStyle : {}
+                        }
+                    },
+                    useWorker: false,
+                    minRadius : 15,
+                    maxRadius : 25,
+                    gravity: 1.1,
+                    scaling: 1.1,
+                    roam: 'move',
+                    nodes:nodes,
+                    links:links
+                }
+            ]
+        };
+        var ecConfig = require('echarts/config');
+        function focus(param) {
+            var data = param.data;
+            var links = option.series[0].links;
+            var nodes = option.series[0].nodes;
+            if (
+                    data.source !== undefined
+                    && data.target !== undefined
+            ) { //点击的是边
+                var sourceNode = nodes.filter(function (n) {return n.name == data.source})[0];
+                var targetNode = nodes.filter(function (n) {return n.name == data.target})[0];
+                console.log("选中了边 " + sourceNode.name + ' -> ' + targetNode.name + ' (' + data.weight + ')');
+            } else { // 点击的是点
+                console.log("选中了" + data.name + '(' + data.value + ')');
+            }
+        }
+        myChart.on(ecConfig.EVENT.CLICK, focus);
+
+        myChart.on(ecConfig.EVENT.FORCE_LAYOUT_END, function () {
+            console.log(myChart.chart.force.getPosition());
+        });
+        // 为echarts对象加载数据
+        myChart.setOption(option);
+    }
+    );
+</script>
+</body>
+</html>

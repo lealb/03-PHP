@@ -1,0 +1,29 @@
+{
+  "name":"bubble",
+  "children": [
+    {"name":"本省","description":"添加描述",
+      "children":[
+        {"name": "服务数:\n497","address":"-", "note":"-"},
+        {"name": "服务使用量：\n880","address":"-"},
+        {"name": "日增量：\n2774","address":"-", "note":"-"}
+      ]},
+    {"name": "公安部", "description": "添加描述",
+      "children":[
+        {"name": "服务数:\n8","address":"-", "note":"-"},
+        {"name": "服务使用量：\n-","address":"-"},
+        {"name": "日增量：\n-","address":"-", "note":"-"}
+      ]},
+    {"name":"一键通", "description":"添加描述",
+      "children":[
+        {"name": "服务类别：\n125","address":"-", "note":"-"},
+        {"name": "数据总量：\n102.3亿","address":"-"},
+        {"name": "服务使用量：\n115万次","address":"-", "note":"-"}
+      ]},
+    {"name":"业务协同", "description":"添加描述",
+      "children":[
+        {"name": "协同数：\n253","address":"-", "note":"-"},
+        {"name": "协同系统：\n172","address":"-"},
+        {"name": "协同数据量：\n156亿","address":"-", "note":"-"}
+      ]}
+  ]
+}

@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>残联人员地区分布</title>
+    <link rel="stylesheet" href="__CSS__/bootstrap.min.css">
+    <script src="http://webapi.amap.com/maps?v=1.3&key=7043a2d34a24f2543d6fa0aea210e073"></script>
+    <script type="text/javascript" src="__JS__/gaodemap/addToolbar.js"></script>
+    <script type="text/javascript" src="__JS__/common/jquery-1.12.2.min.js"></script>
+    <script type="text/javascript" src="__JS__/echarts2.7/echarts.js"></script>
+</head>
+<style>
+    /*去除logo*/
+    .amap-logo {
+        right: 0 !important;
+        left: auto !important;
+        display: none;
+    }
+    .amap-copyright {
+        right: 70px !important;
+        left: auto !important;
+    }
+    .amap-copyright {
+        display: none;
+    }
+</style>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <p class="lead text-info text-center">云腾志远-残联项目残疾人分布区域</p>
+        </div>
+        <div class="col-md-7" style="margin: 0;padding-left: 0">
+            <div class="panel panel-info " >
+                <div class="panel-heading">
+                    <h3 class="panel-title text-center">分布区域图</h3>
+                </div>
+                <div class="col-md-12 panel-body" style="margin: 0;padding-left: 0">
+                    <div id="container"  style="height: 450px;width: 665px"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-5">
+            <div class="panel panel-info">
+                <div class="panel-heading" style="margin: 0;padding-left: 0">
+                    <h3 class="panel-title text-center ">关联性分析</h3>
+                </div>
+                <div class="col-md-12 panel-body" style="margin: 0;padding-left: 0">
+                    <!-- 为Charts准备一个具备大小（宽高）的Dom -->
+                    <div id="main" style="width: 500px;height:600px;"></div>
+                </div>
+            </div>
+        </div>
+        <input type="hidden" id="dpf" value="{$list}">
+    </div>
+</div>
+    <script type="text/javascript">
+    //初始化地图对象，加载地图
+    //贵州省政府
+    // 26.5826129523,106.5756338937
+    var point_x=106.7072385779;
+    var point_y=26.5981430000;
+    var map = new AMap.Map("container", {
+        resizeEnable: true,
+        center: [106.5756338937, 26.5866129523],//地图中心点
+        zoom: 11 //地图显示的缩放级别
+    });
+
+    //高斯随机函数
+    function gaussian(mean, stdev) {
+        var y2;
+        var use_last = false;
+        return function() {
+            var y1;
+            if(use_last) {
+                y1 = y2;
+                use_last = false;
+            }
+            else {
+                var x1, x2, w;
+                do {
+                    x1 = 2.0 * Math.random() - 1.0;
+                    x2 = 2.0 * Math.random() - 1.0;
+                    w  = x1 * x1 + x2 * x2;
+                } while( w >= 1.0);
+                w = Math.sqrt((-2.0 * Math.log(w))/w);
+                y1 = x1 * w;
+                y2 = x2 * w;
+                use_last = true;
+            }
+
+            var retval = mean + stdev * y1;
+            if(retval > 0)
+                return retval;
+            return -retval;
+        }
+    }
+    //获取高斯产生的随机数 集合
+    var si1=gaussian(point_x,0.05);
+    var si2=gaussian(point_y,0.05);
+    var si3=gaussian(point_x-0.226763,0.05);
+    var si4=gaussian(point_y-0.022243,0.05);
+    //创建坐标点对象数组
+    var pcounts=500;
+    var points_x=new Array();
+    var points_y=new Array();
+    for (var i = 0; i < pcounts; i ++) {
+
+       points_x[i]=si1();
+       points_y[i]=si2();
+
+    }
+    for (var i = pcounts; i < pcounts*3/2; i ++) {
+
+        points_x[i]=si3();
+        points_y[i]=si4();
+    }
+    //获取绑定信息
+    var dpf=$("#dpf").val();
+    var dpfs=new Array();
+    dpfs=dpf.split(";");
+    var dpfss=new Array();
+    for(var i=0;i<=dpfs.length-1;i++){
+        dpfss[i]=dpfs[i].split(",");
+    }
+    //添加点标记，并使用自己的icon
+    map.clearMap();  // 清除地图覆盖物
+    var markers = new Array("red10.png","yellow10.png","orange10.png");
+    var colorm;
+    var marker;
+    var infoWindow = new AMap.InfoWindow({offset: new AMap.Pixel(0, -30)});
+    for(var i=0;i<=points_x.length-1;i++){
+        if(i%10==0){
+            colorm=markers[0];
+        }
+        else  if(i%20==0){
+            colorm=markers[1];
+        }
+        else colorm=markers[2];
+        marker= new AMap.Marker({
+            map: map,
+            position: [points_x[i], points_y[i]],
+            icon: new AMap.Icon({
+                size: new AMap.Size(10, 10),  //图标大小
+                image: "__IMG__/icon/"+colorm,
+                imageOffset: new AMap.Pixel(0, 0)
+            })
+        });
+
+        marker.content = '<div class="text-center">人员信息</div>' +
+                '<div class="info-content">' +
+                '<img src="__IMG__/icon/football_people_48px.png" style="float: right">' +
+                '姓名：'+dpfss[i][0]+'<br/>'+
+                '性别：'+dpfss[i][1]+'<br/>'+
+                '身份证号：'+dpfss[i][2]+'<br/>'+
+                '联系电话：'+dpfss[i][3]+'<br/>'+
+                '地址：**<br/>'+'</div>';
+        marker.on('click', markerClick);
+    }
+
+    function markerClick(e) {
+        infoWindow.setContent(e.target.content);
+        infoWindow.open(map, e.target.getPosition());
+    }
+
+    //关联分析
+    // 基于准备好的dom，初始化echarts实例
+    // 路径配置
+    require.config({
+        paths: {
+            echarts: 'http://echarts.baidu.com/build/dist'
+        }
+    });
+    var area=new Array("贵阳市");
+    var acase=new Array("性别：A2男-38693","性别：A1女-23169","户口类别：D2非农业-27218",
+            "户口类别：D1农业-34644","年龄：B4中年（41-65）-34785",
+            "婚姻状况：E1未婚-40414",
+            "是否就业：C2否-25656","受教育程度：F3初中-40676");
+    //数据
+    var nodes=[
+        {category:0, name: '贵阳市', value : 10, label: '贵阳市\n（主要）'},
+        {category:2, name: acase[0],value : 8},
+        {category:2, name: acase[1],value : 8},
+        {category:2, name: acase[2],value : 8},
+        {category:2, name: acase[3],value : 8},
+        {category:2, name: acase[4],value : 8},
+        {category:2, name: acase[5],value : 8},
+        {category:2, name: acase[6],value : 8},
+        {category:2, name: acase[7],value : 8},
+    ];
+    var links= [
+        {source : acase[0], target : area[0], weight : 6, name: '所属'},
+        {source : acase[1], target : area[0], weight : 6, name: '所属'},
+        {source : acase[2], target : area[0], weight : 6, name: '所属'},
+        {source : acase[3], target : area[0], weight : 6, name: '所属'},
+        {source : acase[4], target : area[0], weight : 6, name: '所属'},
+        {source : acase[5], target : area[0], weight : 6, name: '所属'},
+        {source : acase[6], target : area[0], weight : 6, name: '所属'},
+        {source : acase[7], target : area[0], weight : 6, name: '所属'},
+
+        //关联
+        {source : acase[5], target : acase[7], weight : 6, name: '关联度：28812,置信度：0.4657'},
+        {source : acase[1], target : acase[5], weight : 6, name: '关联度：24918,置信度：0.4028'},
+        {source : acase[4], target : acase[5], weight : 6, name: '关联度：26201,置信度：0.4206'},
+        {source : acase[3], target : acase[7], weight : 6, name: '关联度：23429,置信度：0.3787'},
+        {source : acase[3], target : acase[7], weight : 6, name: '关联度：23970,置信度：0.3875'},
+        {source : acase[1], target : acase[3], weight : 6, name: '关联度：22499,置信度：0.3637'},
+        {source : acase[1], target : acase[7], weight : 6, name: '关联度：24370,置信度：0.4392'},
+        {source : acase[4], target : acase[7], weight : 6, name: '关联度：24370,置信度：0.3939'},
+        {source : acase[1], target : acase[4], weight : 6, name: '关联度：22190,置信度：0.3587'},
+
+
+
+
+    ];
+    // 使用
+    require(
+            [
+                'echarts',
+                'echarts/chart/bar', // 使用柱状图就加载bar模块，按需加载
+                'echarts/chart/chord',
+                'echarts/chart/force'
+            ],
+
+            function (ec) {
+                // 基于准备好的dom，初始化echarts图表
+                var myChart = ec.init(document.getElementById('main'));
+
+                option = {
+                    title : {
+                        text: '',
+                        x:'left',
+                        y:'top'
+
+                    },
+                    tooltip : {
+                        trigger: 'item',
+                        formatter: '{a} : {b}'
+                    },
+                    toolbox: {
+                        show : true,
+                        feature : {
+                            restore : {show: true},
+                            magicType: {show: true, type: ['force', 'chord']},
+                            saveAsImage : {show: true}
+                        }
+                    },
+                    legend: {
+                        x: 'left',
+                        data:['区域','残疾属性']
+
+                    },
+                    series : [
+                        {
+                            type:'force',
+                            name : "关联",
+                            ribbonType: false,
+                            categories : [
+                                {
+                                    name: '所属'
+                                },
+                                {
+                                    name: '区域'
+                                },
+                                {
+                                    name:'残疾属性'
+                                }
+                            ],
+                            itemStyle: {
+                                normal: {
+                                    label: {
+                                        show: true,
+                                        textStyle: {
+                                            color: '#333'
+                                        }
+                                    },
+                                    nodeStyle : {
+                                        brushType : 'both',
+                                        borderColor : 'rgba(255,215,0,0.4)',
+                                        borderWidth : 1
+                                    },
+                                    linkStyle: {
+                                        type: 'curve'
+                                    }
+                                },
+                                emphasis: {
+                                    label: {
+                                        show: false
+                                        // textStyle: null      // 默认使用全局文本样式，详见TEXTSTYLE
+                                    },
+                                    nodeStyle : {
+                                        //r: 30
+                                    },
+                                    linkStyle : {}
+                                }
+                            },
+                            useWorker: false,
+                            minRadius : 15,
+                            maxRadius : 25,
+                            gravity: 1.0,
+                            scaling: 1.0,
+                            roam: 'move',
+                            nodes:nodes,
+                            links:links
+                        }
+                    ]
+                };
+                var ecConfig = require('echarts/config');
+                function focus(param) {
+                    var data = param.data;
+                    var links = option.series[0].links;
+                    var nodes = option.series[0].nodes;
+                    if (
+                            data.source !== undefined
+                            && data.target !== undefined
+                    ) { //点击的是边
+                        var sourceNode = nodes.filter(function (n) {return n.name == data.source})[0];
+                        var targetNode = nodes.filter(function (n) {return n.name == data.target})[0];
+                        console.log("选中了边 " + sourceNode.name + ' -> ' + targetNode.name + ' (' + data.weight + ')');
+                    } else { // 点击的是点
+                        console.log("选中了" + data.name + '(' + data.value + ')');
+                    }
+                }
+                myChart.on(ecConfig.EVENT.CLICK, focus);
+
+                myChart.on(ecConfig.EVENT.FORCE_LAYOUT_END, function () {
+                    console.log(myChart.chart.force.getPosition());
+                });
+                // 为echarts对象加载数据
+                myChart.setOption(option);
+            }
+    );
+
+    </script>
+</body>
+</html>

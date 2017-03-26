@@ -1,0 +1,109 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <title>云腾志远</title>
+    <link rel="stylesheet" href="__CSS__/bootstrap.min.css">
+    <script src="http://webapi.amap.com/maps?v=1.3&key=7043a2d34a24f2543d6fa0aea210e073"></script>
+    <script type="text/javascript" src="__JS__/heatmapData.js"></script>
+    <script type="text/javascript" src="__JS__/swfobject.js"></script>
+    <script type="text/javascript" src="__JS__/jquery-1.12.2.min.js"></script>
+    <script type="text/javascript" src="__JS__/bootstrap.min.js"></script>
+    <script type="text/javascript" src="__JS__/heatmap-amap.min.js"></script>
+    <script type="text/javascript" src="__JS__/addToolbar.js"></script>
+</head>
+<style>
+    /*去除logo*/
+    .amap-logo {
+        right: 0 !important;
+        left: auto !important;
+        display: none;
+    }
+    .amap-copyright {
+        right: 70px !important;
+        left: auto !important;
+    }
+    .amap-copyright {
+        display: none;
+    }
+</style>
+<body>
+
+<div id="container" style="width:850px;height: 450px"></div>
+
+
+<script>
+    //$('#myModal').modal(show);
+    //北京市 116.418261, 39.921984
+    var map = new AMap.Map("container", {
+        resizeEnable: true,
+        center: [106.724368, 26.5737055],//26.6047055087,106.7243686963
+        zoom: 12
+    });
+
+    if (!isSupportCanvas()) {
+        alert('热力图仅对支持canvas的浏览器适用,您所使用的浏览器不能使用热力图功能,请换个浏览器试试~')
+    }
+    //详细的参数,可以查看heatmap.js的文档 http://www.patrick-wied.at/static/heatmapjs/docs.html
+    //参数说明如下:
+    /* visible 热力图是否显示,默认为true
+     * opacity 热力图的透明度,分别对应heatmap.js的minOpacity和maxOpacity
+     * radius 势力图的每个点的半径大小
+     * gradient  {JSON} 热力图的渐变区间 . gradient如下所示
+     *	{
+     .2:'rgb(0, 255, 255)',
+     .5:'rgb(0, 110, 255)',
+     .8:'rgb(100, 0, 255)'
+     }
+     其中 key 表示插值的位置, 0-1
+     value 为颜色值
+     */
+
+    //利用ajax查询热力图数据
+    var heatmap;
+    map.plugin(["AMap.Heatmap"], function() {
+        //初始化heatmap对象
+        heatmap = new AMap.Heatmap(map, {
+            radius: 25, //给定半径
+            opacity: [0, 0.8]
+            /*,gradient:{
+             0.5: 'blue',
+             0.65: 'rgb(117,211,248)',
+             0.7: 'rgb(0, 255, 0)',
+             0.9: '#ffea00',
+             1.0: 'red'
+             }*/
+        });
+        heatmap.start();
+        //设置数据集：
+        $.ajax({
+            url: '/Home/Index/getAjaxData',//提交访问的URL
+            type: 'GET',//提交的方法
+            dataType: 'text',//返回的内容的类型，由于PHP文件是直接echo的，那么这里就是text
+            timeout: 1000,//超时时间
+            error: function(){ //如果出错，执行函数
+                alert('Error loading XML document');
+            },
+            success: function(data){
+                // alert(data);//如果成功，弹出数据
+               // heatmapData
+                heatmap.setDataSet({
+                    data: heatmapData,
+                    max: 100
+                });
+            }
+        });
+
+
+    });
+    //判断浏览区是否支持canvas
+    function isSupportCanvas() {
+        var elem = document.createElement('canvas');
+        return !!(elem.getContext && elem.getContext('2d'));
+    }
+
+</script>
+</body>
+</html>

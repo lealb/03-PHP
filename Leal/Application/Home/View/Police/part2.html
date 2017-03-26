@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>公安厅展示</title>
+</head>
+    <script type="text/javascript" src="__JS__/echarts-2.2.7/build/dist/echarts-all.js"></script>
+    <!--<script type="text/javascript" src="__JS__/echarts/echarts.js"></script>-->
+    <!-引入theme-->
+    <script type="text/javascript" src="__JS__/common/jquery-1.12.2.min.js"></script>
+    <script type="text/javascript" src="__JS__/map/guizhou.js"></script>
+    <script type="text/javascript" src="__JS__/map/guiyang.js"></script>
+    <script type="text/javascript" src="__JS__/map/nanmingqu.js"></script>
+    <style>
+        #chart{
+           margin-top: 145px;
+           margin-left: 450px;
+        }
+        body{
+            width: 1920px;
+            height: 1080px;
+        }
+    </style>
+<body background="__IMG__/police/police.jpg">
+<div id="chart" style="width: 1050px;height: 825px"></div>
+</body>
+<script>
+    var chart=echarts.init(document.getElementById('chart'));
+    option = {
+        backgroundColor: 'rgba(0,72,129,1.0)',
+        color: ['gold','aqua','lime'],
+        title : {
+            text: '地州数据汇入图',
+            //subtext:'今日进港人数：26’913 人\n今日出港人数：430’978 人\n当月进港人数：829’274 人\n当月出港人数：11’468’270 人',
+           // textAlign:'left',
+            x:'center',
+            padding:5,
+            itemGap:10,
+            textStyle : {
+                color: '#fff',
+                fontFamily : '微软雅黑',
+                fontSize : 18  ,
+                fontWeight : 'bolder'
+            },
+            SubtextStyle : {
+                color: '#fff',
+                fontFamily : '微软雅黑',
+                fontSize : 20  ,
+                fontWeight : 'bolder'
+            }
+        },
+        tooltip : {
+            trigger: 'item',
+            formatter: '{b}:{c}人'
+        },
+        legend: {
+            orient: 'vertical',
+            x:'left',
+            data:['贵阳汇入'],
+            selectedMode: 'single',
+            textStyle : {
+                color: '#fff'
+            }
+        },
+        toolbox: {
+            show : true,
+            orient : 'vertical',
+            x: 'right',
+            y: 'center',
+            feature : {
+                mark : {show: true},
+                restore : {show: true}
+            }
+        },
+        dataRange: {
+            min : 20000,
+            max : 230000,
+            calculable : true,
+            color: ['#ff3333', 'orange', 'yellow','lime','aqua'],
+            textStyle:{
+                color:'#fff'
+            }
+        },
+        series : [
+            {
+                name: '全国',
+                type: 'map',
+                roam: true,
+                hoverable: false,
+                mapType: '贵州',
+                itemStyle:{
+                    normal:{
+                        label:{
+                            show:true,
+                            textStyle:{
+                                color:'#fff',
+                                fontSize:14
+                            }
+                        },
+                        borderColor:'rgba(100,149,237,1)',
+                        borderWidth:0.5,
+                        areaStyle:{
+                            color: 'rgba(0,72,129,1.0)'
+                        }
+                    }
+                },
+                data : [
+                    {name:'安顺',value:198296},
+                    {name:'毕节',value:183734},
+                    {name:'赤水',value:177053},
+                    {name:'都匀',value:120174},
+                    {name:'凯里',value:108395},
+                    {name:'六盘水',value:105864},
+                    {name:'清镇',value:100665},
+                    {name:'铜仁',value:97009},
+                    {name:'兴义',value:92685},
+                    {name:'遵义',value:91782}
+                ],
+                markLine : {
+                    smooth:true,
+                    symbol: ['circle','none'],
+                    symbolSize : 1,
+                    itemStyle : {
+                        label:{show:false},
+                        normal: {
+                            color:'#fff',
+                            borderWidth:1,
+                            borderColor:'rgba(30,144,255,0.5)'
+                        }
+                    },
+                    data : [
+
+                    ],
+                },
+                geoCoord: {
+                    '贵阳': [106.57,26.63],
+                    '安顺': [105.95,26.00],
+                    '毕节': [105.18,27.18],
+                    '都匀': [107.31,26.00],
+                    '凯里': [108.40,26.59],
+                    '六盘水': [104.83,26.20],
+                    '铜仁': [108.52,27.80],
+                    '兴义': [105.20,25.22],
+                    '遵义': [106.91,27.90]
+                },
+            },
+            {
+                name: '贵阳汇入',
+                type: 'map',
+                mapType: '贵州',
+                data:[],
+                markLine : {
+                    smooth:true,
+                    effect : {
+                        show: true,
+                        scaleSize: 1,
+                        period: 30,
+                        color: '#fff',
+                        shadowBlur: 10
+                    },
+                    itemStyle : {
+                        normal: {
+                            borderWidth:1,
+                            label:{show:false},
+                            lineStyle: {
+                                type: 'solid',
+                                shadowBlur: 10
+                            }
+                        }
+                    },
+                    data : [
+                       // [{name:'贵阳'}, {name:'贵阳',value:227911}],
+                        [{name:'安顺'}, {name:'贵阳',value:198296}],
+                        [{name:'毕节'}, {name:'贵阳',value:183734}],
+                        [{name:'都匀'}, {name:'贵阳',value:120174}],
+                        [{name:'凯里'}, {name:'贵阳',value:108395}],
+                        [{name:'六盘水'}, {name:'贵阳',value:105864}],
+                        [{name:'铜仁'}, {name:'贵阳',value:97009}],
+                        [{name:'兴义'}, {name:'贵阳',value:92685}],
+                        [{name:'遵义'}, {name:'贵阳',value:91782}]
+                    ]
+                },
+                markPoint : {
+                    symbol:'emptyCircle',
+                    symbolSize : function (v){
+                        console.log(v);
+                        return 10 + v/2000000
+                    },
+                    effect : {
+                        show: true,
+                       // type:'bounce',
+                        shadowBlur : 0
+                    },
+                    data : [
+                        {name:'安顺',value:198296},
+                        {name:'毕节',value:183734},
+                        {name:'赤水',value:177053},
+                        {name:'都匀',value:120174},
+                        {name:'凯里',value:108395},
+                        {name:'六盘水',value:105864},
+                        {name:'清镇',value:100665},
+                        {name:'铜仁',value:97009},
+                        {name:'兴义',value:92685},
+                        {name:'遵义',value:91782}
+                    ]
+                }
+            }
+        ]
+    };
+    chart.setOption(option);
+</script>
+</html>

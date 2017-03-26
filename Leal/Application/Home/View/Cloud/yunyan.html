@@ -1,0 +1,221 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <title>云腾志远</title>
+    <link rel="stylesheet" href="__CSS__/bootstrap.min.css">
+    <script src="http://webapi.amap.com/maps?v=1.3&key=7043a2d34a24f2543d6fa0aea210e073"></script>
+    <script type="text/javascript" src="__JS__/gaodemap/heatmapData.js"></script>
+    <script type="text/javascript" src="__JS__/common/swfobject.js"></script>
+    <script type="text/javascript" src="__JS__/common/jquery-1.12.2.min.js"></script>
+    <script type="text/javascript" src="__JS__/common/bootstrap.min.js"></script>
+    <script type="text/javascript" src="__JS__/gaodemap/heatmap-amap.min.js"></script>
+    <script type="text/javascript" src="__JS__/common/addToolbar.js"></script>
+</head>
+<style>
+    /*去除logo*/
+    .amap-logo {
+        right: 0 !important;
+        left: auto !important;
+        display: none;
+    }
+    .amap-copyright {
+        right: 70px !important;
+        left: auto !important;
+    }
+    .amap-copyright {
+        display: none;
+    }
+    *{
+        margin: 0;
+        padding: 0;
+    }
+</style>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <p class="lead text-info text-center" style="font-family: '黑体' ! important;">
+                云岩区12319案件分布热力图及关键字云图</p>
+        </div>
+        <div class="col-md-7">
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <h3 class="panel-title text-center" >热力图</h3>
+                </div>
+                <div class="col-md-12 panel-body">
+                    <div id="container" style="height: 450px"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <h3 class="panel-title text-center">关键字云图</h3>
+                </div>
+                <div class="panel-body">
+                    <div id="flashcontent">This will be shown to users with no Flash or Javascript.</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-1">
+            <button class="btn" data-toggle="modal" data-target="#myModal">
+                显示
+            </button>
+        </div>
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog"
+             aria-labelledby="myModalLabel" aria-hidden="true" height="1000px">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close"
+                                data-dismiss="modal" aria-hidden="true">
+                            &times;
+                        </button>
+                        <h4 class="modal-title" id="myModalLabel">
+                            云岩区事件详细
+                        </h4>
+                    </div>
+                    <div class="modal-body">
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr class="info">
+                                <th class="text-center" width="5%">序号</th>
+                                <th>案卷编号</th>
+                                <th>事发位置</th>
+                                <th>详细信息</th>
+                                <th width="7%">处理类型</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <if condition="!empty($list)">
+                                <php>$i=0</php>
+                                <foreach name="list" item="vo" key="i">
+                                    <php>$i++</php>
+                                    <tr class="tr-info">
+                                        <td>{$i}</td>
+                                        <td>{$vo['caseid']}</td>
+                                        <td>{$vo['casepsin']}</td>
+                                        <td>{$vo['caseremark']}</td>
+                                        <td>{$vo['dealtypename']}</td>
+                                    </tr>
+                                </foreach>
+                                <else />
+                                <tr>
+                                    <td colspan="5">
+                                        <div class="alert alert-success">
+                                            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                                            <span class="sr-only">Error:</span>
+                                            <span>暂时没有符合条件的信息</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </if>
+                            </tbody>
+                        </table>
+                        <nav class="pagination-nav pull-right">
+                            {$page}
+                        </nav>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal -->
+        </div>
+    </div>
+</div>
+
+
+<script>
+    //$('#myModal').modal(show);
+    //北京市 116.418261, 39.921984
+    var map = new AMap.Map("container", {
+        resizeEnable: true,
+        center: [106.724368, 26.5947055],//26.6047055087,106.7243686963
+        zoom: 12
+    });
+
+    if (!isSupportCanvas()) {
+        alert('热力图仅对支持canvas的浏览器适用,您所使用的浏览器不能使用热力图功能,请换个浏览器试试~')
+    }
+    //详细的参数,可以查看heatmap.js的文档 http://www.patrick-wied.at/static/heatmapjs/docs.html
+    //参数说明如下:
+    /* visible 热力图是否显示,默认为true
+     * opacity 热力图的透明度,分别对应heatmap.js的minOpacity和maxOpacity
+     * radius 势力图的每个点的半径大小
+     * gradient  {JSON} 热力图的渐变区间 . gradient如下所示
+     *	{
+     .2:'rgb(0, 255, 255)',
+     .5:'rgb(0, 110, 255)',
+     .8:'rgb(100, 0, 255)'
+     }
+     其中 key 表示插值的位置, 0-1
+     value 为颜色值
+     */
+
+    //利用ajax查询热力图数据
+    var heatmap;
+    map.plugin(["AMap.Heatmap"], function() {
+        //初始化heatmap对象
+        heatmap = new AMap.Heatmap(map, {
+            radius: 25, //给定半径
+            opacity: [0, 0.8]
+            /*,gradient:{
+             0.5: 'blue',
+             0.65: 'rgb(117,211,248)',
+             0.7: 'rgb(0, 255, 0)',
+             0.9: '#ffea00',
+             1.0: 'red'
+             }*/
+        });
+        heatmap.start();
+        //设置数据集：
+        $.ajax({
+            url: '/Home/Index/getAjaxData',//提交访问的URL
+            type: 'GET',//提交的方法
+            dataType: 'text',//返回的内容的类型，由于PHP文件是直接echo的，那么这里就是text
+            timeout: 1000,//超时时间
+            error: function(){ //如果出错，执行函数
+                alert('Error loading XML document');
+            },
+            success: function(data){
+                // alert(data);//如果成功，弹出数据
+               // heatmapData
+                heatmap.setDataSet({
+                    data: heatmapData,
+                    max: 100
+                });
+            }
+        });
+
+
+    });
+    //判断浏览区是否支持canvas
+    function isSupportCanvas() {
+        var elem = document.createElement('canvas');
+        return !!(elem.getContext && elem.getContext('2d'));
+    }
+
+    //关键字云图
+    var so = new SWFObject("__IMG__/ctagcloud.swf", "tagcloud", "360", "420", "7", "#ffffff");
+    // uncomment next line to enable transparency
+//    so.addParam("wmode", "transparent");
+//    so.addVariable("tcolor", "0x333333");
+//    so.addVariable("tcolor2", "0x009900");
+//    so.addVariable("hicolor", "0x000000");
+//    so.addVariable("tspeed", "100");
+//    so.addVariable("distr", "true");
+//    so.addVariable("xmlpath", "__IMG__/tagcloud.xml");
+//    so.write("flashcontent");
+    so.addParam("wmode", "transparent");
+    so.addVariable("tcolor", "0x333333");
+    so.addVariable("tcolor2", "0x009900");
+    so.addVariable("mode", "tags");
+    so.addVariable("distr", "true");
+    so.addVariable("tspeed", "100");
+    so.addVariable("tagcloud", "<tags><a href='/Home/Index/index/tag/安全隐患' data-toggle='modal' data-target='#myModal' class='tag-link-66' title='2 topics' rel='tag' style='font-size: 20pt;' color='0xff0099'>安全隐患</a><a href='/Home/Index/index/tag/违章建筑' class='tag-link-39' title='1 topics' rel='tag' style='font-size: 19pt;'>违章建筑</a> <a href='/Home/Index/index/tag/噪音扰民' class='tag-link-54' title='2 topics' rel='tag' style='font-color:red;font-size: 18pt;'>噪音扰民</a> <a href='/Home/Index/index/tag/占道经营' class='tag-link-42' title='1 topics' rel='tag' style='font-size: 17pt;'>占道经营</a> <a href='/Home/Index/index/tag/道路破损' class='tag-link-25' title='1 topics' rel='tag' style='font-size: 16pt;'>道路破损</a> <a href='/Home/Index/index/tag/油烟污染' class='tag-link-27' title='1 topics' rel='tag' style='font-size: 15pt;'>油烟污染</a> <a href='/Home/Index/index/tag/下水道堵塞' class='tag-link-29' title='1 topics' rel='tag' style='font-size: 14pt;'>下水道堵塞</a> <a href='/Home/Index/index/tag/污水横流' class='tag-link-43' title='1 topics' rel='tag' style='font-size: 13.5pt;' hicolor='red'>污水横流</a> <a href='/Home/Index/index/tag/施工扰民' class='tag-link-24' title='1 topics' rel='tag' style='font-size: 13pt;'>施工扰民</a> <a href='/Home/Index/index/tag/夜市摊点' class='tag-link-48' title='2 topics' rel='tag' style='font-size: 12.5pt;'>夜市摊点</a> <a href='/Home/Index/index/tag/机动车违停' class='tag-link-26' title='2 topics' rel='tag' style='font-size: 12pt;'>机动车违停</a> <a href='/Home/Index/index/tag/化粪池堵塞' class='tag-link-37' title='3 topics' rel='tag' style='font-size: 11.1111pt;'>化粪池堵塞</a> <a href='/Home/Index/index/tag/高音喇叭' class='tag-link-18' title='1 topics' rel='tag' style='font-size: 11pt;'>高音喇叭</a> <a href='/Home/Index/index/tag/粪水横流' class='tag-link-28' title='1 topics' rel='tag' style='font-size: 10.5pt;'>粪水横流</a> <a href='/Home/Index/index/tag/施工放炮' class='tag-link-32' title='1 topics' rel='tag' style='font-size: 10pt;'>施工放炮</a> <a href='/Home/Index/index/tag/没有路灯' class='tag-link-56' title='2 topics' rel='tag' style='font-size: 9.55556pt;'>没有路灯</a> <a href='/Home/Index/index/tag/交通堵塞' class='tag-link-57' title='2 topics' rel='tag' style='font-size: 9.5px;'>交通堵塞</a> <a href='/Home/Index/index/tag/井盖翘起' class='tag-link-8' title='1 topics' rel='tag' style='font-size: 9.5pt;'>井盖翘起</a> <a href='/Home/Index/index/tag/垃圾堆放' class='tag-link-61' title='2 topics' rel='tag' style='font-size: 9pt;'>垃圾堆放</a> <a href='/Home/Index/index/tag/乞丐行乞' class='tag-link-64' title='2 topics' rel='tag' style='font-size: 8.5pt;'>乞丐行乞</a> <a href='/Home/Index/index/tag/外墙漏水' class='tag-link-34' title='2 topics' rel='tag' style='font-size: 8pt;'>外墙漏水</a> <a href='/Home/Index/index/tag/片区停电' class='tag-link-50' title='2 topics' rel='tag' style='font-size: 8pt;'>片区停电</a> <a href='/Home/Index/index/tag/摩托车乱停放' class='tag-link-62' title='2 topics' rel='tag' style='font-size: 8pt;'>摩托车乱停放</a> <a href='/Home/Index/index/tag/酒吧噪音' class='tag-link-45' title='1 topics' rel='tag' style='font-size: 8pt;'>酒吧噪音</a> <a href='/Home/Index/index/tag/僵尸车' class='tag-link-38' title='1 topics' rel='tag' style='font-size: 8pt;'>僵尸车</a> <a href='/Home/Index/index/tag/棚户改造' class='tag-link-36' title='1 topics' rel='tag' style='font-size: 8pt;'>棚户改造</a> <a href='/Home/Index/index/tag/申请廉租房' class='tag-link-40' title='3 topics' rel='tag' style='font-size: 8pt;'>申请廉租房</a> </tags>");
+    so.write("flashcontent");
+
+</script>
+</body>
+</html>

@@ -1,0 +1,337 @@
+<?php if (!defined('THINK_PATH')) exit();?><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>公安厅正式第一屏</title>
+</head>
+    <link rel="stylesheet" href="/Public/Home/css/bootstrap.min.css">
+    <script type="text/javascript" src="/Public/Home/js/echarts/echarts.js"></script>
+    <script type="text/javascript" src="/Public/Home/js/common/jquery-1.12.2.min.js"></script>
+<style>
+    body{height:768px; overflow: hidden;}
+    *{
+        margin: 0;
+        padding: 0;
+    }
+    #chart1{
+        width: 325px;
+        height: 180px;
+        position: absolute;
+        top:350px;
+        left:650px;
+    }
+
+    #chart2{
+        width: 325px;
+        height: 180px;
+        position: absolute;
+        top:350px;
+        left:890px;
+    }
+
+    #chart3{
+        width: 350px;
+        height: 180px;
+        position: absolute;
+        top:350px;
+        left:1120px;
+    }
+
+    #chart4{
+        width: 360px;
+        height: 300px;
+        position: absolute;
+        top:100px;
+        left:1020px;
+    }
+
+
+</style>
+<body>
+    <iframe src="/Police/partvstar.html" style="width: 1366px; height: 768px;" frameborder="no" border="0"
+            marginwidth="0" marginheight="0" scrolling="no"></iframe>
+    <div id="chart1"></div>
+    <div id="chart2"></div>
+    <div id="chart3"></div>
+    <div id="chart4"></div>
+</body>
+
+<!--图表-->
+<script type="text/javascript">
+    //图1 仪表盘 生产库 已汇聚数量
+    var chart1=echarts.init(document.getElementById('chart1'));
+    option = {
+        title:{
+            text:'已汇聚',
+            textStyle:{
+                color:'#67a5fc',
+                fontSize:14
+            },
+            x:'center',
+            y:'bottom'
+        },
+        tooltip : {
+            formatter: "{a} <br/>{b} : {c}%"
+        },
+        series: [
+            {
+                type:'gauge',
+                splitNumber: 5,       // 分割段数，默认为5
+                axisLine: {            // 坐标轴线
+                    lineStyle: {       // 属性lineStyle控制线条样式
+                      //  color: [[0.2, '#508de8'],[0.8, '#1d65c7'],[1, '#083a81']],
+                        color: [[0.2, '#228b22'],[0.8, '#48b'],[1, '#ff4500']],
+                        width: 4
+                    }
+                },
+                axisTick: {            // 坐标轴小标记
+                    splitNumber: 5,   // 每份split细分多少段
+                    length :6,        // 属性length控制线长
+                    lineStyle: {       // 属性lineStyle控制线条样式
+                        color: 'auto'
+                    }
+                },
+                axisLabel: {           // 坐标轴文本标签，详见axis.axisLabel
+                    textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
+                        color: 'auto'
+                    }
+                },
+                splitLine: {           // 分隔线
+                    show: true,        // 默认显示，属性show控制显示与否
+                    length :15,         // 属性length控制线长
+                    lineStyle: {       // 属性lineStyle（详见lineStyle）控制线条样式
+                        color: 'auto'
+                    }
+                },
+                pointer : {
+                    width : 5,
+                   // color:'#508de8'
+                },
+                title : {
+                    show : true,
+                    offsetCenter: [0, '-40%'],       // x, y，单位px
+                    textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
+                        fontWeight: 'bolder'
+                    }
+                },
+                detail : {
+                    formatter:'{value}%',
+                    offsetCenter: [4, 50],       // x, y，单位px
+                    textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
+                        color: 'auto',
+                        fontSize: 15,
+                        fontWeight: 'bolder'
+                    }
+                },
+                data: [{value: 82.29, name: ''}]
+            }
+        ]
+    };
+    chart1.setOption(option);
+
+    //图2 仪表盘 生产库 未汇聚数量
+    var chart2=echarts.init(document.getElementById('chart2'));
+    option = {
+        title:{
+            text:'未汇聚',
+            textStyle:{
+                color:'#67a5fc',
+                fontSize:14
+            },
+            x:'center',
+            y:'bottom'
+        },
+        tooltip : {
+            formatter: "{a} <br/>{b} : {c}%"
+        },
+        series: [
+            {
+                type:'gauge',
+                splitNumber: 5,       // 分割段数，默认为5
+                axisLine: {            // 坐标轴线
+                    lineStyle: {       // 属性lineStyle控制线条样式
+                        //  color: [[0.2, '#508de8'],[0.8, '#1d65c7'],[1, '#083a81']],
+                        color: [[0.2, '#228b22'],[0.8, '#48b'],[1, '#ff4500']],
+                        width: 4
+                    }
+                },
+                axisTick: {            // 坐标轴小标记
+                    splitNumber: 5,   // 每份split细分多少段
+                    length :6,        // 属性length控制线长
+                    lineStyle: {       // 属性lineStyle控制线条样式
+                        color: 'auto'
+                    }
+                },
+                axisLabel: {           // 坐标轴文本标签，详见axis.axisLabel
+                    textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
+                        color: 'auto'
+                    }
+                },
+                splitLine: {           // 分隔线
+                    show: true,        // 默认显示，属性show控制显示与否
+                    length :15,         // 属性length控制线长
+                    lineStyle: {       // 属性lineStyle（详见lineStyle）控制线条样式
+                        color: 'auto'
+                    }
+                },
+                pointer : {
+                    width : 5,
+                    // color:'#508de8'
+                },
+                title : {
+                    show : true,
+                    offsetCenter: [0, '-40%'],       // x, y，单位px
+                    textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
+                        fontWeight: 'bolder'
+                    }
+                },
+                detail : {
+                    formatter:'{value}%',
+                    offsetCenter: [4, 50],       // x, y，单位px
+                    textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
+                        color: 'auto',
+                        fontSize: 15,
+                        fontWeight: 'bolder'
+                    }
+                },
+                    data: [{value: 17.71, name: ''}]
+            }
+        ]
+    };
+    chart2.setOption(option);
+
+    //图3 仪表盘 生产库 日均量
+    var chart3=echarts.init(document.getElementById('chart3'));
+    option = {
+        title:{
+            text:'日均增长率',
+            textStyle:{
+                color:'#67a5fc',
+                fontSize:14
+            },
+            x:'center',
+            y:'bottom'
+        },
+        tooltip : {
+            formatter: "{a} <br/>{b} : {c}%"
+        },
+        series: [
+            {
+                type:'gauge',
+                splitNumber: 5,       // 分割段数，默认为5
+                axisLine: {            // 坐标轴线
+                    lineStyle: {       // 属性lineStyle控制线条样式
+                        //  color: [[0.2, '#508de8'],[0.8, '#1d65c7'],[1, '#083a81']],
+                        color: [[0.2, '#228b22'],[0.8, '#48b'],[1, '#ff4500']],
+                        width: 4
+                    }
+                },
+                axisTick: {            // 坐标轴小标记
+                    splitNumber: 5,   // 每份split细分多少段
+                    length :6,        // 属性length控制线长
+                    lineStyle: {       // 属性lineStyle控制线条样式
+                        color: 'auto'
+                    }
+                },
+                axisLabel: {           // 坐标轴文本标签，详见axis.axisLabel
+                    textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
+                        color: 'auto'
+                    }
+                },
+                splitLine: {           // 分隔线
+                    show: true,        // 默认显示，属性show控制显示与否
+                    length :15,         // 属性length控制线长
+                    lineStyle: {       // 属性lineStyle（详见lineStyle）控制线条样式
+                        color: 'auto'
+                    }
+                },
+                pointer : {
+                    width : 5,
+                    // color:'#508de8'
+                },
+                title : {
+                    show : true,
+                    offsetCenter: [0, '-40%'],       // x, y，单位px
+                    textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
+                        fontWeight: 'bolder'
+                    }
+                },
+                detail : {
+                    formatter:'{value}%',
+                    offsetCenter: [4, 50],       // x, y，单位px
+                    textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
+                        color: 'auto',
+                        fontSize: 15,
+                        fontWeight: 'bolder'
+                    }
+                },
+                data: [{value: 0.35, name: ''}]
+            }
+        ]
+    };
+    chart3.setOption(option);
+
+    //图4 柱状 折线
+    var chart4=echarts.init(document.getElementById('chart4'));
+    option = {
+
+        title:{
+            text:'数据总量占比',
+            textStyle:{
+                color:'#fff',
+                fontSize:14
+            },
+            x:'center'
+        },
+        tooltip: {
+            trigger: 'axis',
+        },
+        legend: {
+            orient : 'vertical',
+            x : 'left',
+            data:['数据量','日增量']
+        },
+        xAxis: [
+            {
+                type: 'category',
+                data: ['警种','地州','其他']
+            }
+        ],
+        yAxis: [
+            {
+                type: 'value',
+                min: 0,
+                max: 14000000000,
+                interval: 10,
+                axisLabel: {
+                    formatter: '{value}'
+                }
+            },
+            {
+                type: 'value',
+                min: 0,
+                max: 50000000,
+                interval: 5,
+                axisLabel: {
+                    formatter: '{value}'
+                }
+            }
+        ],
+        series: [
+            {
+                name:'数据量',
+                type:'bar',
+                data:[13308799571, 1169016178, 809318894]
+            },
+            {
+                name:'日增量',
+                type:'line',
+                yAxisIndex: 1,
+                data:[46942877, 4123361, 2854635]
+            }
+        ]
+    };
+    chart4.setOption(option);
+</script>
+
+</html>
